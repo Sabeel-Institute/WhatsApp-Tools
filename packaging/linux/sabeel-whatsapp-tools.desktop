@@ -1,0 +1,17 @@
+[Desktop Entry]
+Type=Application
+Version=1.5
+Name=Sabeel WhatsApp Tools
+GenericName=WhatsApp group helper
+Comment=Create WhatsApp groups for courses from a registration list
+Exec=@BIN@
+Icon=sabeel-whatsapp-tools
+Terminal=false
+Categories=Office;Network;
+Keywords=WhatsApp;group;course;community;registration;
+StartupNotify=false
+Actions=demo;
+
+[Desktop Action demo]
+Name=Try it in demo mode
+Exec=@BIN@ --demo

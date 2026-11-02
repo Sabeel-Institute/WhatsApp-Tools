@@ -1,0 +1,13 @@
+# build output
+/dist/
+/internal/webui/dist/*
+!/internal/webui/dist/.gitkeep
+/cmd/sabeel-whatsapp-tools/rsrc_windows_*.syso
+
+# dependencies
+node_modules/
+
+# test output
+/e2e/test-results/
+/e2e/playwright-report/
+/e2e/.data/

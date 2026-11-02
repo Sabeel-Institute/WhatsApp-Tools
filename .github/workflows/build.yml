@@ -1,0 +1,149 @@
+name: Build
+
+# Every push to main and every pull request: lint, unit tests, end-to-end
+# tests in demo mode, and packages for Linux, Windows and macOS (each smoke-
+# tested on its own OS). Pushing a tag like v1.2.0 also publishes a GitHub
+# release with those packages attached.
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: ${{ !startsWith(github.ref, 'refs/tags/') }}
+
+jobs:
+  check:
+    name: Lint and unit tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-go@v7
+        with:
+          go-version-file: go.mod
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - name: Check formatting
+        run: test -z "$(gofmt -l cmd internal)"
+      - name: Lint, type-check and test
+        run: make check
+
+  package:
+    name: Packages (Linux, Windows)
+    needs: check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-go@v7
+        with:
+          go-version-file: go.mod
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - name: Build Linux and Windows packages
+        run: make dist-linux dist-windows
+      - name: Self-test (Linux)
+        run: dist/linux/sabeel-whatsapp-tools --self-test && dist/linux/sabeel-whatsapp-tools --self-test --demo
+      - uses: actions/upload-artifact@v7
+        with:
+          name: linux
+          path: dist/*-linux-*.tar.gz
+          if-no-files-found: error
+      - uses: actions/upload-artifact@v7
+        with:
+          name: windows
+          path: dist/*-windows-*.zip
+          if-no-files-found: error
+
+  macos:
+    name: Package (macOS)
+    needs: check
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-go@v7
+        with:
+          go-version-file: go.mod
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - name: Build the universal app
+        run: make dist-macos
+      - name: Self-test (Apple silicon)
+        run: |
+          app="dist/macos/Sabeel WhatsApp Tools.app/Contents/MacOS/sabeel-whatsapp-tools"
+          lipo -archs "$app"
+          "$app" --self-test
+          "$app" --self-test --demo
+      - name: Self-test (Intel, through Rosetta)
+        run: |
+          app="dist/macos/Sabeel WhatsApp Tools.app/Contents/MacOS/sabeel-whatsapp-tools"
+          if arch -x86_64 /usr/bin/true 2>/dev/null; then
+            arch -x86_64 "$app" --self-test
+          else
+            echo "::notice::Rosetta is not installed on this runner; the Intel slice was not run."
+          fi
+      - uses: actions/upload-artifact@v7
+        with:
+          name: macos
+          path: dist/*-macos-*.zip
+          if-no-files-found: error
+
+  windows-smoke:
+    name: Self-test (Windows)
+    needs: package
+    runs-on: windows-latest
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          name: windows
+      - name: Run the app's self-test
+        shell: pwsh
+        run: |
+          $zip = Get-ChildItem -Filter '*-windows-*.zip' | Select-Object -First 1
+          Expand-Archive -Path $zip.FullName -DestinationPath app
+          foreach ($mode in @('--self-test', '--self-test --demo')) {
+            $p = Start-Process -FilePath 'app\SabeelWhatsAppTools.exe' -ArgumentList $mode -Wait -PassThru -NoNewWindow
+            if ($p.ExitCode -ne 0) { throw "self-test '$mode' failed with exit code $($p.ExitCode)" }
+          }
+          Write-Output 'Windows self-test passed'
+
+  release:
+    name: Publish release
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: [package, macos, windows-smoke]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          path: artifacts
+          merge-multiple: true
+      - name: Create the GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.ref_name }}
+        run: |
+          ls -la artifacts
+          gh release create "$TAG" artifacts/* --repo "$GITHUB_REPOSITORY" --title "Sabeel WhatsApp Tools $TAG" --generate-notes

@@ -1,0 +1,172 @@
+/*
+ * Design tokens. Every colour in the UI comes from here (Sabeel brand,
+ * "Option 1" palette, light theme only). Names describe roles.
+ */
+:root {
+  /* surfaces */
+  --bg-canvas: #f6ebdd; /* Warm Ivory: the page */
+  --bg-surface: #fbf6f0; /* cards */
+  --bg-raised: #ffffff; /* inputs, menus, dialogs */
+  --bg-inset: #efe4d6; /* recessed areas, table headers */
+  --bg-accent-soft: #f1e1e3; /* tint behind a selected item */
+  --bg-hover: #f5ece2;
+
+  /* text */
+  --text-primary: #3a2f28;
+  --text-secondary: #6a5748;
+  --text-muted: #a58d7a; /* decoration only: never information */
+  --text-inverse: #f9f2e9; /* on raspberry */
+  --text-accent: #83114f;
+
+  /* lines */
+  --border-subtle: #e6d9ca;
+  --border: #dfd1c1;
+  --border-strong: #c9b7a7;
+  --gold: #c6a15b; /* decorative hairlines */
+
+  /* brand */
+  --accent: #83114f; /* Dark Raspberry */
+  --accent-hover: #660d3e;
+  --accent-pressed: #520a32;
+  --on-accent: #f9f2e9;
+  --sage: #a8b89a;
+
+  /* feedback (functional scale) */
+  --success: #4e7a43;
+  --success-text: #3f6636;
+  --success-soft: #e6eedf;
+  --warning: #977535;
+  --warning-text: #795e2a;
+  --warning-soft: #f6ead0;
+  --danger: #a32218;
+  --danger-soft: #f8e4e1;
+  --info: #3e6b8a;
+  --info-soft: #e3edf3;
+  --neutral-soft: #ede3d7;
+
+  /* shape */
+  --radius-sm: 8px;
+  --radius: 12px;
+  --radius-lg: 18px;
+  --shadow-sm: 0 1px 2px rgba(58, 47, 40, 0.06);
+  --shadow: 0 1px 2px rgba(58, 47, 40, 0.05), 0 4px 16px rgba(58, 47, 40, 0.06);
+  --shadow-lg: 0 2px 6px rgba(58, 47, 40, 0.06), 0 16px 40px rgba(58, 47, 40, 0.12);
+  --focus: 0 0 0 2px var(--bg-raised), 0 0 0 4px var(--accent);
+
+  /* type */
+  --font: 'Inter Variable', 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
+    sans-serif;
+  --font-mono: ui-monospace, 'SF Mono', 'Cascadia Mono', 'Segoe UI Mono', Menlo, Consolas, monospace;
+
+  color-scheme: light;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--bg-canvas);
+  color: var(--text-primary);
+  font-family: var(--font);
+  font-size: 16px;
+  line-height: 1.55;
+  font-feature-settings: 'cv11', 'ss01';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  margin: 0;
+  line-height: 1.25;
+  letter-spacing: -0.012em;
+  color: var(--text-primary);
+}
+
+h1 {
+  font-size: 1.875rem;
+  font-weight: 650;
+}
+
+h2 {
+  font-size: 1.375rem;
+  font-weight: 650;
+}
+
+h3 {
+  font-size: 1.0625rem;
+  font-weight: 620;
+}
+
+p {
+  margin: 0;
+}
+
+a {
+  color: var(--text-accent);
+  text-underline-offset: 3px;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+::selection {
+  background: #ecd3dc;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.muted {
+  color: var(--text-secondary);
+}
+
+.small {
+  font-size: 0.875rem;
+}
+
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
