@@ -3,7 +3,7 @@ Changelog
 
 All notable changes to Sabeel WhatsApp Tools. Versions follow `Semantic Versioning <https://semver.org>`_.
 
-0.1.0 (unreleased)
+0.1.0 (2026-11-01)
 ------------------
 
 First version.
