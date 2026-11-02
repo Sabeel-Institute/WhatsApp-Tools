@@ -8,9 +8,10 @@
 # Everything is pure Go (CGO_ENABLED=0), so every platform cross-compiles
 # from Linux.
 
-VERSION ?= $(shell git describe --tags --always --dirty 2>/dev/null | sed 's/^v//')
+# Tagged builds use the tag (v1.2.3 -> 1.2.3); others are 0.1.0-dev+<commit>.
+VERSION ?= $(shell git describe --tags --dirty 2>/dev/null | sed 's/^v//')
 ifeq ($(VERSION),)
-VERSION := 0.0.0-dev
+VERSION := 0.1.0-dev+$(shell git rev-parse --short HEAD 2>/dev/null || echo unknown)
 endif
 # Numeric form for Windows resources and the macOS Info.plist.
 NUMVER := $(shell printf '%s' '$(VERSION)' | sed 's/[^0-9.].*$$//' | grep -E '^[0-9]+(\.[0-9]+){0,3}$$' || echo 0.0.0)
