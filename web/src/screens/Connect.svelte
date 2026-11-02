@@ -343,7 +343,7 @@
     position: relative;
     width: 300px;
     height: 300px;
-    background: #fff;
+    background: var(--bg-raised);
     border: 1px solid var(--border);
     border-radius: var(--radius-lg);
     padding: 14px;
@@ -420,7 +420,7 @@
     font-weight: 600;
     letter-spacing: 0.12em;
     color: var(--text-primary);
-    background: #fff;
+    background: var(--bg-raised);
     border: 1px solid var(--border);
     border-radius: var(--radius);
     padding: 1rem 0.5rem;

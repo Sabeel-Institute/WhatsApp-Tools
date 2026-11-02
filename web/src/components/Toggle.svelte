@@ -51,7 +51,7 @@
     width: 76px;
     height: 34px;
     border-radius: 999px;
-    border: 1px solid var(--border-strong);
+    border: 1px solid var(--border-input);
     background: var(--bg-inset);
     cursor: pointer;
     transition: background-color 0.15s ease;
@@ -69,7 +69,7 @@
     height: 26px;
     border-radius: 50%;
     background: var(--bg-raised);
-    box-shadow: 0 1px 3px rgba(58, 47, 40, 0.25);
+    box-shadow: var(--shadow-knob);
     transition: transform 0.18s ease;
   }
   .state {

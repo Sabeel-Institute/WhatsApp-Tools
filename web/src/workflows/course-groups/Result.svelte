@@ -507,7 +507,7 @@
   .link {
     flex: 1;
     min-width: 0;
-    border: 1px solid var(--border-strong);
+    border: 1px solid var(--border-input);
     border-radius: var(--radius-sm);
     background: var(--bg-raised);
     padding: 0.6rem 0.85rem;
@@ -525,7 +525,7 @@
   }
   textarea {
     width: 100%;
-    border: 1px solid var(--border-strong);
+    border: 1px solid var(--border-input);
     border-radius: var(--radius-sm);
     background: var(--bg-raised);
     padding: 0.7rem 0.85rem;
@@ -536,7 +536,7 @@
   .link:focus-visible {
     outline: none;
     border-color: var(--accent);
-    box-shadow: 0 0 0 3px rgba(131, 17, 79, 0.18);
+    box-shadow: var(--focus-field);
   }
   .message-actions {
     display: flex;

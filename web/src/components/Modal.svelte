@@ -52,7 +52,7 @@
     width: 100%;
   }
   dialog::backdrop {
-    background: rgba(58, 47, 40, 0.38);
+    background: var(--backdrop);
     backdrop-filter: blur(2px);
   }
   dialog[open] {

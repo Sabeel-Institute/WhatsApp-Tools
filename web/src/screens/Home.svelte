@@ -230,7 +230,7 @@
     color: var(--on-accent);
   }
   .primary {
-    border-color: #dcc2c9;
+    border-color: var(--border-accent);
   }
   .action-text {
     display: flex;
@@ -261,7 +261,7 @@
     gap: 1.5rem;
     padding: 1.25rem 1.5rem;
     background: var(--bg-surface);
-    border: 1px solid #dcc2c9;
+    border: 1px solid var(--border-accent);
     border-left: 4px solid var(--accent);
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow);

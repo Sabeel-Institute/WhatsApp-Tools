@@ -107,7 +107,7 @@
   .primary {
     background: var(--accent);
     color: var(--on-accent);
-    box-shadow: 0 1px 2px rgba(82, 10, 50, 0.25);
+    box-shadow: var(--shadow-button);
   }
   .primary:hover:not(:disabled) {
     background: var(--accent-hover);
@@ -122,7 +122,7 @@
   }
   .secondary:hover:not(:disabled) {
     border-color: var(--text-secondary);
-    background: #fffdfa;
+    background: var(--bg-secondary-hover);
   }
   .ghost {
     background: transparent;
@@ -142,7 +142,7 @@
   .danger {
     background: var(--bg-raised);
     color: var(--danger);
-    border-color: #e2b8b3;
+    border-color: var(--border-danger-strong);
   }
   .danger:hover:not(:disabled) {
     background: var(--danger-soft);

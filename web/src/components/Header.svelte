@@ -170,7 +170,7 @@
     position: sticky;
     top: 0;
     z-index: 20;
-    background: rgba(246, 235, 221, 0.92);
+    background: var(--bg-header);
     backdrop-filter: saturate(1.2) blur(8px);
     border-bottom: 1px solid var(--border-subtle);
   }
@@ -217,7 +217,7 @@
     font-weight: 600;
     color: var(--warning-text);
     background: var(--warning-soft);
-    border: 1px solid #e6d3a8;
+    border: 1px solid var(--border-warning);
     padding: 0.25rem 0.65rem;
     border-radius: 999px;
   }

@@ -357,7 +357,7 @@
     padding: 0.85rem 1rem;
     border-radius: var(--radius);
     background: var(--info-soft);
-    border: 1px solid #c9dbe6;
+    border: 1px solid var(--border-info);
   }
   .checking-text {
     display: flex;
@@ -484,7 +484,7 @@
     color: var(--text-accent);
   }
   .edit-btn.fix {
-    border: 1px solid #e6d3a8;
+    border: 1px solid var(--border-warning);
     background: var(--warning-soft);
     color: var(--warning-text);
     opacity: 1;
@@ -501,8 +501,8 @@
     border: 1px solid var(--accent);
     border-radius: 8px;
     padding: 0.4rem 0.6rem;
-    background: #fff;
-    box-shadow: 0 0 0 3px rgba(131, 17, 79, 0.15);
+    background: var(--bg-raised);
+    box-shadow: var(--focus-field);
   }
   .edit-input:focus-visible {
     outline: none;

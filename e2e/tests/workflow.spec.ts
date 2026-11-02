@@ -190,6 +190,15 @@ test('suggests the right columns for every sample export', async () => {
   const importHeading = page.getByRole('heading', { name: 'Import the list of people' });
   await page.getByRole('button', { name: 'Back to home' }).click();
   await page.getByRole('button', { name: /Create a course group/ }).click();
+
+  // A file with the same columns as before gets the same choices back.
+  await expect(importHeading).toBeVisible();
+  await upload('eventbrite-attendees.csv');
+  await continueStep();
+  await expect(page.getByText("We've used the same choices as last time")).toBeVisible();
+  await expect(page.getByLabel('First name column').locator('option:checked')).toHaveText('First Name');
+  await shot(page, '24-match-remembered');
+  await page.getByRole('button', { name: 'Back', exact: true }).click();
   for (const [file, phoneColumn] of Object.entries(expected)) {
     await expect(importHeading).toBeVisible();
     await upload(file);
@@ -197,7 +206,7 @@ test('suggests the right columns for every sample export', async () => {
     if (file === 'semicolon-windows1252.csv') await expect(page.getByText('José Muñoz')).toBeVisible();
     if (file === 'no-header.csv') {
       await expect(page.getByText("doesn't have a row of column names")).toBeVisible();
-      await shot(page, '24-import-no-header');
+      await shot(page, '25-import-no-header');
     }
     await continueStep();
     const select = page.getByLabel('Which column has the phone number?');
@@ -208,9 +217,9 @@ test('suggests the right columns for every sample export', async () => {
       await waitForReview();
       if (file === 'excel-damaged.csv') {
         await expect(page.getByText('This number was damaged by Excel. Please fix it in the original file.').first()).toBeVisible();
-        await shot(page, '25-review-excel-damaged');
+        await shot(page, '26-review-excel-damaged');
       } else {
-        await shot(page, '26-review-google-form');
+        await shot(page, '27-review-google-form');
       }
       backs = 2;
     }
@@ -229,20 +238,20 @@ test('adds late registrants to an existing group', async () => {
   await expect(page.getByRole('heading', { name: 'Choose the group' })).toBeVisible();
   await page.getByLabel('Community').selectOption({ label: 'Sabeel Institute' });
   await page.getByLabel('Group', { exact: true }).selectOption({ label: 'Arabic Level 1 · 54 members' });
-  await shot(page, '27-add-choose-group');
+  await shot(page, '28-add-choose-group');
   await continueStep();
   await expect(page.getByText(/Add \d people to “Arabic Level 1” in “Sabeel Institute”/)).toBeVisible();
-  await shot(page, '28-add-confirm');
+  await shot(page, '29-add-confirm');
   await page.getByRole('button', { name: /^Add \d people$/ }).click();
   await expect(page.getByRole('heading', { name: 'People added to “Arabic Level 1”' })).toBeVisible({ timeout: 60_000 });
-  await shot(page, '29-add-results');
+  await shot(page, '30-add-results');
 });
 
 test('shows recent activity and reopens a run', async () => {
   await page.getByRole('button', { name: 'Back to home' }).click();
   await expect(page.getByRole('heading', { name: 'Recent activity' })).toBeVisible();
   await expect(page.getByRole('link', { name: /Tafsir Circle Fall 2026/ })).toBeVisible();
-  await shot(page, '30-home-recent-activity');
+  await shot(page, '31-home-recent-activity');
   await page.getByRole('link', { name: /Tafsir Circle Fall 2026/ }).click();
   await expect(page.getByRole('heading', { name: '“Tafsir Circle Fall 2026” is ready' })).toBeVisible();
   await page.getByRole('button', { name: 'Back to home' }).click();
@@ -250,57 +259,84 @@ test('shows recent activity and reopens a run', async () => {
 
 test('works at narrow widths', async () => {
   await page.setViewportSize({ width: 900, height: 860 });
-  await shot(page, '31-home-900px');
+  await shot(page, '32-home-900px');
   await page.getByRole('button', { name: /Create a course group/ }).click();
   await upload('stripe-payments.csv');
   await continueStep();
   await continueStep();
   await waitForReview();
-  await shot(page, '32-review-900px');
+  await shot(page, '33-review-900px');
   await page.setViewportSize({ width: 600, height: 900 });
-  await shot(page, '33-review-600px');
+  await shot(page, '34-review-600px');
   await page.setViewportSize({ width: 1280, height: 860 });
+  await page.getByRole('link', { name: 'Home' }).first().click();
+});
+
+test('can be used with the keyboard alone', async () => {
+  await page.goto(page.url().replace(/#.*$/, '#/'));
+  await expect(page.getByRole('heading', { name: 'What would you like to do?' })).toBeVisible();
+  const focusedName = () => page.evaluate(() => (document.activeElement as HTMLElement | null)?.innerText ?? '');
+  let found = false;
+  for (let i = 0; i < 15 && !found; i++) {
+    await page.keyboard.press('Tab');
+    found = (await focusedName()).includes('Create a course group');
+  }
+  expect(found).toBe(true);
+  // The focused control has a visible focus ring.
+  const ring = await page.evaluate(() => getComputedStyle(document.activeElement!).boxShadow);
+  expect(ring).not.toBe('none');
+  await page.keyboard.press('Enter');
+  // The unfinished draft from earlier is still there, at its review step.
+  await expect(page.getByRole('heading', { name: 'Review the list' })).toBeVisible();
+  found = false;
+  for (let i = 0; i < 40 && !found; i++) {
+    await page.keyboard.press('Tab');
+    found = (await focusedName()).trim() === 'Continue';
+  }
+  expect(found).toBe(true);
+  await page.keyboard.press('Enter');
+  await expect(page.getByRole('heading', { name: 'Group details' })).toBeVisible();
   await page.getByRole('link', { name: 'Home' }).first().click();
 });
 
 test('handles disconnects, logouts and other trouble', async ({ app }) => {
   // Account menu and the disconnect confirmation.
   await page.getByRole('button', { name: /Sabeel Front Desk/ }).click();
-  await shot(page, '34-account-menu', { window: true });
+  await shot(page, '35-account-menu', { window: true });
   await page.getByRole('menuitem', { name: /Disconnect WhatsApp/ }).click();
   await expect(page.getByRole('dialog', { name: 'Disconnect WhatsApp?' })).toBeVisible();
-  await shot(page, '35-disconnect-confirm', { window: true });
+  await shot(page, '36-disconnect-confirm', { window: true });
   await page.getByRole('button', { name: 'Cancel' }).click();
 
   // Unlinked from the phone: back to Connect, with an explanation.
   await apiPost(app, '/api/demo/simulate', { what: 'logout' });
   await expect(page.getByText('WhatsApp disconnected this computer')).toBeVisible();
   await expect(page.locator('.qr svg')).toBeVisible();
-  await shot(page, '36-logged-out');
+  await shot(page, '37-logged-out');
   await expect(page.getByRole('heading', { name: 'What would you like to do?' })).toBeVisible({ timeout: 30_000 });
 
   // Opened from a bookmark, without the session token.
   const other = await context.newPage();
   await other.goto(app.base + '/');
   await expect(other.getByRole('heading', { name: 'Please open the app from your apps menu' })).toBeVisible();
-  await shot(other, '37-no-token');
+  await shot(other, '38-no-token');
   await other.close();
 
   await apiPost(app, '/api/demo/simulate', { what: 'ban' });
   await expect(page.getByRole('heading', { name: 'WhatsApp has paused this account' })).toBeVisible();
-  await shot(page, '38-temporarily-banned');
+  await shot(page, '39-temporarily-banned');
 
   await apiPost(app, '/api/demo/simulate', { what: 'outdated' });
   await expect(page.getByRole('heading', { name: 'Please update the app' })).toBeVisible();
-  await shot(page, '39-update-needed');
+  await shot(page, '40-update-needed');
 });
 
 test('quits cleanly from the Quit button', async ({ app }) => {
   await page.getByRole('button', { name: 'Quit' }).click();
   await expect(page.getByRole('dialog', { name: 'Quit the app?' })).toBeVisible();
-  await shot(page, '40-quit-confirm', { window: true });
+  await shot(page, '41-quit-confirm', { window: true });
   await page.getByRole('dialog').getByRole('button', { name: 'Quit' }).click();
   await expect(page.getByRole('heading', { name: 'The app has closed' })).toBeVisible();
-  await shot(page, '41-closed');
+  await shot(page, '42-closed');
   expect(await app.exited).toBe(0);
 });

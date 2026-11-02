@@ -114,7 +114,7 @@
     padding: 1.4rem 1.5rem;
     border-radius: var(--radius-lg);
     background: var(--bg-raised);
-    border: 1px solid #dcc2c9;
+    border: 1px solid var(--border-accent);
     box-shadow: var(--shadow-sm);
   }
   .sicon {

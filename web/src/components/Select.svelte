@@ -97,7 +97,7 @@
     width: 100%;
     min-height: 46px;
     padding: 0.6rem 2.5rem 0.6rem 0.85rem;
-    border: 1px solid var(--border-strong);
+    border: 1px solid var(--border-input);
     border-radius: var(--radius-sm);
     background: var(--bg-raised);
     cursor: pointer;
@@ -109,7 +109,7 @@
   select:focus-visible {
     outline: none;
     border-color: var(--accent);
-    box-shadow: 0 0 0 3px rgba(131, 17, 79, 0.18);
+    box-shadow: var(--focus-field);
   }
   select:disabled {
     opacity: 0.6;

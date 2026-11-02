@@ -63,28 +63,28 @@
   }
   .info {
     background: var(--info-soft);
-    border-color: #c9dbe6;
+    border-color: var(--border-info);
   }
   .info .icon {
     color: var(--info);
   }
   .success {
     background: var(--success-soft);
-    border-color: #c9d8bf;
+    border-color: var(--border-success);
   }
   .success .icon {
     color: var(--success);
   }
   .warning {
     background: var(--warning-soft);
-    border-color: #e6d3a8;
+    border-color: var(--border-warning);
   }
   .warning .icon {
     color: var(--warning);
   }
   .danger {
     background: var(--danger-soft);
-    border-color: #ebc2bc;
+    border-color: var(--border-danger);
   }
   .danger .icon {
     color: var(--danger);
