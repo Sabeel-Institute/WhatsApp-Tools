@@ -217,13 +217,19 @@
   .footer {
     position: sticky;
     bottom: 0;
+    z-index: 5;
     display: flex;
     justify-content: space-between;
     align-items: center;
     gap: 1rem;
     margin-top: 1.25rem;
-    padding: 1rem 0;
-    background: linear-gradient(to bottom, rgba(246, 235, 221, 0), var(--bg-canvas) 30%);
+    padding: 0.9rem 0 1rem;
+    background: var(--bg-canvas);
+    border-top: 1px solid var(--border-subtle);
+  }
+  /* Full-page screenshots (docs) show the bar where it ends up, at the end. */
+  :global(html[data-capture]) .footer {
+    position: static;
   }
   .right {
     display: flex;

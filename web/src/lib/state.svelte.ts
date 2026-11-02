@@ -62,6 +62,8 @@ class AppState {
         const next = data as WAStatus;
         if (next.state === 'logged_out' && this.status.state !== 'logged_out') this.wasLoggedOut = true;
         if (next.state === 'connected') this.wasLoggedOut = false;
+        // A finished link attempt's events must not leak into the next one.
+        if (['connected', 'logged_out', 'unlinked'].includes(next.state)) this.login = null;
         this.status = next;
         break;
       }

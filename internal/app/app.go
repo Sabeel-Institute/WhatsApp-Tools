@@ -102,7 +102,7 @@ func Run(ctx context.Context, opts Options) error {
 		if latency == 0 {
 			latency = 1
 		}
-		wa = demo.New(dir, demo.Options{Latency: latency})
+		wa = demo.New(dir, demo.Options{Latency: latency, LinkAfter: max(time.Duration(float64(7*time.Second)*latency), 2*time.Second)})
 		pacing = pacing.Scaled(0.25 * latency)
 	} else {
 		wa = real.New(dir, log, versionTriple(opts.Version))

@@ -61,7 +61,12 @@
     {/if}
 
     <div class="preview">
-      <p class="preview-label">First {Math.min(5, list.table.rows.length)} of {num(list.table.rows.length)} rows</p>
+      <div class="preview-head">
+        <p class="preview-label">First {Math.min(5, list.table.rows.length)} of {num(list.table.rows.length)} rows</p>
+        {#if list.table.columns.length > 5}
+          <p class="preview-hint">Scroll sideways to see all {list.table.columns.length} columns →</p>
+        {/if}
+      </div>
       <!-- A scrollable region must be focusable so keyboard users can scroll it. -->
       <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
       <div class="table-wrap" role="region" aria-label="Preview of the file" tabindex="0">
@@ -195,11 +200,21 @@
     text-overflow: ellipsis;
     white-space: nowrap;
   }
+  .preview-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 1rem;
+    margin-bottom: 0.5rem;
+  }
   .preview-label {
     font-size: 0.875rem;
     font-weight: 600;
     color: var(--text-secondary);
-    margin-bottom: 0.5rem;
+  }
+  .preview-hint {
+    font-size: 0.8125rem;
+    color: var(--text-secondary);
   }
   .table-wrap {
     overflow-x: auto;

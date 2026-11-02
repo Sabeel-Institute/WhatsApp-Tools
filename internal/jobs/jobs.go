@@ -299,7 +299,8 @@ func (j *Job) snapshot() Snapshot {
 	for k, v := range j.snap.Counts {
 		s.Counts[k] = v
 	}
-	s.Recent = append([]Entry(nil), j.snap.Recent...)
+	s.Recent = make([]Entry, len(j.snap.Recent)) // never nil: the UI reads .length
+	copy(s.Recent, j.snap.Recent)
 	s.ETASeconds = j.eta()
 	return s
 }

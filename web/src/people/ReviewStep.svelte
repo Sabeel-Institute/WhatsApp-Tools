@@ -15,6 +15,7 @@
   import ProgressBar from '../components/ProgressBar.svelte';
   import Spinner from '../components/Spinner.svelte';
   import { app } from '../lib/state.svelte';
+  import { toast } from '../components/toaster.svelte';
   import { num, people as peopleCount } from '../lib/format';
   import type { Person, PersonStatus } from '../lib/types';
   import { usable, type PeopleList } from './list.svelte';
@@ -92,6 +93,11 @@
     await list.editPhone(row, draft);
     saving = false;
     editing = null;
+    const p = list.review?.people.find((x) => x.row === row);
+    if (p) {
+      const who = p.name || `Row ${p.row}`;
+      toast.show(usable(p) ? `Number updated: ${who} is ready` : `Number updated: ${who} still needs attention`);
+    }
   }
 </script>
 
@@ -216,10 +222,21 @@
               </form>
             {:else}
               <span class="phone tabular" class:raw={!p.display}>{p.display || p.raw || '—'}</span>
-              <button class="edit-btn" onclick={() => startEdit(p)} aria-label="Edit the number for {p.name || `row ${p.row}`}">
-                <Pencil size={15} aria-hidden={true} />
-                <span>{p.status === 'attention' ? 'Fix' : 'Edit'}</span>
-              </button>
+              {#if p.status === 'attention'}
+                <button class="edit-btn fix" onclick={() => startEdit(p)} aria-label="Edit the number for {p.name || `row ${p.row}`}">
+                  <Pencil size={15} aria-hidden={true} />
+                  <span>Fix</span>
+                </button>
+              {:else}
+                <button
+                  class="edit-btn quiet"
+                  onclick={() => startEdit(p)}
+                  aria-label="Edit the number for {p.name || `row ${p.row}`}"
+                  title="Edit this number"
+                >
+                  <Pencil size={15} aria-hidden={true} />
+                </button>
+              {/if}
             {/if}
           </span>
           <span role="cell" class="c-status">
@@ -437,6 +454,21 @@
   }
   .edit-btn:hover {
     background: var(--bg-accent-soft);
+    opacity: 1;
+  }
+  .edit-btn.quiet {
+    color: var(--text-secondary);
+    opacity: 0.55;
+  }
+  .row:hover .edit-btn.quiet,
+  .edit-btn.quiet:focus-visible {
+    opacity: 1;
+    color: var(--text-accent);
+  }
+  .edit-btn.fix {
+    border: 1px solid #e6d3a8;
+    background: var(--warning-soft);
+    color: var(--warning-text);
     opacity: 1;
   }
   .edit {

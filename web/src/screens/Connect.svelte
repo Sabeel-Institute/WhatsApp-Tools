@@ -91,10 +91,11 @@
     }
   }
 
-  // Follow login events from the server.
+  // Follow login events from the server (only those after this screen opened).
+  let mounted = false;
   $effect(() => {
     const ev = app.login;
-    if (!ev) return;
+    if (!ev || !mounted) return;
     switch (ev.kind) {
       case 'qr':
         if (mode === 'qr') {
@@ -120,6 +121,7 @@
 
   onMount(() => {
     app.login = null;
+    mounted = true;
     startQR();
     api
       .get<Country[]>('/api/countries')
