@@ -37,7 +37,10 @@
 
   <div class="summary">
     <span class="sicon">
-      {#if draft.mode === 'create'}<UsersRound size={28} aria-hidden={true} />{:else}<UserPlus size={28} aria-hidden={true} />{/if}
+      {#if draft.mode === 'create'}<UsersRound size={28} aria-hidden={true} />{:else}<UserPlus
+          size={28}
+          aria-hidden={true}
+        />{/if}
     </span>
     <p class="sentence">
       {#if draft.mode === 'create'}
@@ -70,8 +73,7 @@
       <dt>Left out</dt>
       <dd>
         {#if left > 0}
-          {people(left)} from the file (numbers that need fixing, duplicates, people without WhatsApp, or people you
-          unticked).
+          {people(left)} from the file (numbers that need fixing, duplicates, people without WhatsApp, or people you unticked).
         {:else}
           Nobody. Everyone in the file will be added.
         {/if}
@@ -80,12 +82,15 @@
   </dl>
 
   <div class="notes">
-    <p class="note"><ShieldCheck size={18} aria-hidden={true} />
-      To keep the WhatsApp account safe, people are added {pacing?.addBatchSize ?? 5} at a time with short pauses in
-      between.</p>
-    <p class="note"><Clock size={18} aria-hidden={true} />
+    <p class="note">
+      <ShieldCheck size={18} aria-hidden={true} />
+      To keep the WhatsApp account safe, people are added {pacing?.addBatchSize ?? 5} at a time with short pauses in between.
+    </p>
+    <p class="note">
+      <Clock size={18} aria-hidden={true} />
       This should take {duration(seconds)}. Keep the app open until it finishes; everyone added so far stays added if
-      you stop.</p>
+      you stop.
+    </p>
   </div>
 
   {#if draft.startError}

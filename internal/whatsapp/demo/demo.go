@@ -20,6 +20,7 @@ import (
 	"time"
 	"unicode/utf16"
 
+	phonefmt "github.com/Sabeel-Institute/WhatsApp-Tools/internal/phone"
 	"github.com/Sabeel-Institute/WhatsApp-Tools/internal/platform"
 	"github.com/Sabeel-Institute/WhatsApp-Tools/internal/whatsapp"
 )
@@ -67,7 +68,7 @@ type demoGroup struct {
 	preexisting           bool
 }
 
-var account = whatsapp.Account{Name: "Sabeel Front Desk", Phone: "+12125550100"}
+var account = whatsapp.Account{Name: "Sabeel Front Desk", Phone: "+12125550100", Display: "+1 212-555-0100"}
 
 // New returns a demo client that remembers whether it is linked in dir.
 func New(dir string, opts Options) *Client {
@@ -230,7 +231,7 @@ func (c *Client) StartPhoneLogin(ctx context.Context, phone string) (string, err
 	raw := randomCode(5)
 	code := raw[:4] + "-" + raw[4:8]
 	c.login(whatsapp.LoginEvent{Kind: whatsapp.LoginCode, Code: code})
-	acct := whatsapp.Account{Name: account.Name, Phone: phone}
+	acct := whatsapp.Account{Name: account.Name, Phone: phone, Display: phonefmt.Pretty(phone)}
 	go func() {
 		time.Sleep(c.opts.LinkAfter + 2*time.Second)
 		c.completeLink(gen, acct)

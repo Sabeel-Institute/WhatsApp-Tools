@@ -16,7 +16,9 @@
       wrong with your account.
     </p>
     <ol>
-      <li>Ask the person who looks after this app for the latest version, or download it from the project's Releases page.</li>
+      <li>
+        Ask the person who looks after this app for the latest version, or download it from the project's Releases page.
+      </li>
       <li>Quit this app, replace it with the new version, and open it again.</li>
       <li>You won't need to scan the code again: the connection is kept.</li>
     </ol>
@@ -78,9 +80,30 @@
     color: var(--text-secondary);
   }
   ol {
-    margin: 1.2rem 0 0;
-    padding-left: 1.3rem;
+    margin: 1.4rem 0 0;
+    padding: 0;
+    list-style: none;
     display: grid;
-    gap: 0.5rem;
+    gap: 0.75rem;
+    counter-reset: step;
+  }
+  li {
+    display: flex;
+    gap: 0.8rem;
+    align-items: flex-start;
+    counter-increment: step;
+  }
+  li::before {
+    content: counter(step);
+    flex: none;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--bg-accent-soft);
+    color: var(--accent);
+    display: grid;
+    place-items: center;
+    font-weight: 650;
+    font-size: 0.875rem;
   }
 </style>

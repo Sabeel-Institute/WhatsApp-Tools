@@ -74,17 +74,21 @@ export async function apiPost(app: RunningApp, path: string, body: unknown = {})
   return res.json();
 }
 
-/** Saves a full-page screenshot into docs/screenshots when SCREENSHOTS is set. */
-export async function shot(page: Page, name: string) {
+/**
+ * Saves a screenshot into docs/screenshots when SCREENSHOTS is set: the full
+ * page by default, or just the window (for dialogs, whose backdrop covers
+ * the window only). Toasts are hidden unless asked for.
+ */
+export async function shot(page: Page, name: string, opts: { window?: boolean; toast?: boolean } = {}) {
   if (!SHOTS) return;
   mkdirSync(SHOTS, { recursive: true });
-  // Let transitions and fonts settle so screenshots are stable.
-  await page.evaluate(() => {
-    document.documentElement.dataset.capture = '1';
+  await page.evaluate((toast) => {
+    document.documentElement.dataset.capture = toast ? 'toast' : '1';
     return document.fonts.ready;
-  });
+  }, !!opts.toast);
+  if (!opts.window) await page.evaluate(() => window.scrollTo(0, 0));
   await page.waitForTimeout(250);
-  await page.screenshot({ path: join(SHOTS, `${name}.png`), fullPage: true, animations: 'disabled' });
+  await page.screenshot({ path: join(SHOTS, `${name}.png`), fullPage: !opts.window, animations: 'disabled' });
   await page.evaluate(() => delete document.documentElement.dataset.capture);
 }
 

@@ -84,8 +84,9 @@ type Status struct {
 
 // Account is the WhatsApp account this computer is linked to.
 type Account struct {
-	Name  string `json:"name"`
-	Phone string `json:"phone"` // international format, "+..."
+	Name    string `json:"name"`
+	Phone   string `json:"phone"`   // international format, "+..."
+	Display string `json:"display"` // Phone formatted for reading
 }
 
 // LoginKind identifies a login progress event.

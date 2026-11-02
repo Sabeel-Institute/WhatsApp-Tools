@@ -77,8 +77,11 @@ func (s *runState) save() error {
 	c := s.counts()
 	s.run.Counts = c
 	s.run.Headline = fmt.Sprintf("%d added", c[countAdded])
-	if c[countInvite] > 0 {
-		s.run.Headline += fmt.Sprintf(", %d need an invite", c[countInvite])
+	switch n := c[countInvite]; {
+	case n == 1:
+		s.run.Headline += ", 1 needs an invite"
+	case n > 1:
+		s.run.Headline += fmt.Sprintf(", %d need an invite", n)
 	}
 	data, err := json.Marshal(s.detail)
 	if err != nil {
@@ -161,7 +164,7 @@ func (s *runState) execute(ctl *jobs.Control) (err error) {
 		if err := s.save(); err != nil {
 			return err
 		}
-		ctl.Add(jobs.Entry{Title: "Group created", Detail: s.detail.GroupName, Outcome: "created"})
+		ctl.Add(jobs.Entry{Title: s.detail.GroupName, Detail: "in " + s.detail.CommunityName, Outcome: "created"})
 	}
 
 	// 3. Add people in small batches with randomized pauses.

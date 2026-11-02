@@ -91,7 +91,7 @@
             <div class="menu" role="menu">
               <p class="menu-head">
                 <span class="menu-name">{account.name || 'WhatsApp account'}</span>
-                <span class="tabular">{account.phone}</span>
+                <span class="tabular">{account.display || account.phone}</span>
               </p>
               <button
                 role="menuitem"
@@ -122,7 +122,11 @@
   </div>
 </header>
 
-<Modal open={confirmQuit} title={jobRunning ? 'The app is still working' : 'Quit the app?'} onclose={() => (confirmQuit = false)}>
+<Modal
+  open={confirmQuit}
+  title={jobRunning ? 'The app is still working' : 'Quit the app?'}
+  onclose={() => (confirmQuit = false)}
+>
   {#if jobRunning}
     <p>
       “{app.activeJob?.title}” is still in progress. Quitting now would leave it unfinished, so please wait until it
@@ -158,6 +162,10 @@
 </Modal>
 
 <style>
+  /* Full-page screenshots (docs) keep the header at the top. */
+  :global(html[data-capture]) header {
+    position: relative;
+  }
   header {
     position: sticky;
     top: 0;

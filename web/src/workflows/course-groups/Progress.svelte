@@ -2,7 +2,6 @@
   import Pause from '@lucide/svelte/icons/pause';
   import Play from '@lucide/svelte/icons/play';
   import Square from '@lucide/svelte/icons/square';
-  import WifiOff from '@lucide/svelte/icons/wifi-off';
   import Coffee from '@lucide/svelte/icons/coffee';
   import Button from '../../components/Button.svelte';
   import Banner from '../../components/Banner.svelte';
@@ -36,7 +35,8 @@
   const added = $derived((job.counts.added ?? 0) + (job.counts.already ?? 0));
   const fraction = $derived(job.total ? job.done / job.total : 0);
   const stateLabel = $derived(
-    { running: 'Working', paused: 'Paused', waiting: 'Waiting', stopping: 'Stopping' }[job.state as string] ?? 'Working',
+    { running: 'Working', paused: 'Paused', waiting: 'Waiting', stopping: 'Stopping' }[job.state as string] ??
+      'Working',
   );
   const others = $derived(
     [
@@ -54,7 +54,9 @@
       {stateLabel}
     </p>
     <h1 id="job-title">{job.title}</h1>
-    <p class="phase" aria-live="polite">{job.state === 'stopping' ? 'Finishing the current step, then stopping…' : job.phase}</p>
+    <p class="phase" aria-live="polite">
+      {job.state === 'stopping' ? 'Finishing the current step, then stopping…' : job.phase}
+    </p>
 
     <div class="numbers">
       <p class="big tabular" aria-live="polite">
@@ -70,9 +72,7 @@
     </p>
 
     {#if job.state === 'waiting'}
-      <Banner tone="warning" title="Waiting" live>
-        {#snippet children()}<span class="inline-icon"><WifiOff size={16} aria-hidden={true} /></span>{job.message}{/snippet}
-      </Banner>
+      <Banner tone="warning" live>{job.message}</Banner>
     {:else if job.state === 'paused'}
       <Banner tone="info" title="Paused" live>
         Nothing more is being added. Everyone added so far stays in the group. Choose Continue when you're ready.
@@ -84,7 +84,9 @@
       {#if job.state === 'paused'}
         <Button variant="primary" icon={Play} loading={busy} onclick={() => act('resume')}>Continue</Button>
       {:else}
-        <Button icon={Pause} loading={busy} disabled={job.state === 'stopping'} onclick={() => act('pause')}>Pause</Button>
+        <Button icon={Pause} loading={busy} disabled={job.state === 'stopping'} onclick={() => act('pause')}
+          >Pause</Button
+        >
       {/if}
       <Button variant="danger" icon={Square} disabled={job.state === 'stopping'} onclick={() => (confirmStop = true)}>
         Stop
@@ -114,7 +116,9 @@
     {/if}
   </section>
 
-  <p class="keep-open"><Coffee size={17} aria-hidden={true} /> You can use other programs meanwhile. Keep this app open until it finishes.</p>
+  <p class="keep-open">
+    <Coffee size={17} aria-hidden={true} /> You can use other programs meanwhile. Keep this app open until it finishes.
+  </p>
 </div>
 
 <Modal open={confirmStop} title="Stop adding people?" onclose={() => (confirmStop = false)}>
@@ -192,11 +196,6 @@
   .sub {
     color: var(--text-secondary);
     font-size: 0.9375rem;
-  }
-  .inline-icon {
-    display: inline-flex;
-    vertical-align: -2px;
-    margin-right: 0.35rem;
   }
   .controls {
     display: flex;

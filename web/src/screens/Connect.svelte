@@ -177,15 +177,17 @@
             >
           </li>
           <li>
-            <span class="n">3</span><span>Tap <strong>Link with phone number instead</strong> and type the code shown here.</span>
+            <span class="n">3</span><span
+              >Tap <strong>Link with phone number instead</strong> and type the code shown here.</span
+            >
           </li>
         </ol>
       {/if}
 
       <div class="tip">
         <Banner tone="tip" title="Which number should I use?">
-          We recommend a secondary WhatsApp number that is an admin of your Community, rather than the Community
-          owner's number.
+          We recommend a secondary WhatsApp number that is an admin of your Community, rather than the Community owner's
+          number.
         </Banner>
       </div>
     </div>
@@ -229,14 +231,17 @@
             &nbsp;
           {/if}
         </p>
-        <Button variant="ghost" icon={Smartphone} onclick={() => switchMode('phone')}>Use a phone number instead</Button>
+        <Button variant="ghost" icon={Smartphone} onclick={() => switchMode('phone')}>Use a phone number instead</Button
+        >
       {:else}
         <div class="phone-box">
           {#if code && !expired}
             <p class="muted">Type this code on the phone ({codeFor}):</p>
             <p class="code tabular" aria-label="Pairing code {code.split('').join(' ')}">{code}</p>
             <p class="waiting"><Spinner size={18} /> Waiting for you to enter it on the phone…</p>
-            {#if app.info?.demo}<p class="caption">Demo mode: this pretend code links by itself in a few seconds.</p>{/if}
+            {#if app.info?.demo}<p class="caption">
+                Demo mode: this pretend code links by itself in a few seconds.
+              </p>{/if}
           {:else}
             <form onsubmit={startPhone}>
               {#if expired}

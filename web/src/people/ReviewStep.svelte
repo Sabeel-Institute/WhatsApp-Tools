@@ -51,7 +51,10 @@
   const checkJob = $derived(list.checkJob);
   const checking = $derived(!!checkJob && !['completed', 'failed', 'stopped'].includes(checkJob.state));
 
-  const statusView: Record<PersonStatus, { tone: 'success' | 'info' | 'warning' | 'neutral' | 'danger'; text: string; icon: typeof CircleCheck }> = {
+  const statusView: Record<
+    PersonStatus,
+    { tone: 'success' | 'info' | 'warning' | 'neutral' | 'danger'; text: string; icon: typeof CircleCheck }
+  > = {
     ready: { tone: 'success', text: 'Ready', icon: CircleCheck },
     fixed: { tone: 'info', text: 'Fixed automatically', icon: WandSparkles },
     attention: { tone: 'warning', text: 'Needs attention', icon: TriangleAlert },
@@ -162,7 +165,9 @@
         {peopleCount(counts.attention)}
         {counts.attention === 1 ? 'has a number that needs' : 'have numbers that need'} attention and won't be added unless
         you fix {counts.attention === 1 ? 'it' : 'them'}.
-        <button class="link" onclick={() => (filter = 'attention')}>Show {counts.attention === 1 ? 'it' : 'them'}</button>
+        <button class="link" onclick={() => (filter = 'attention')}
+          >Show {counts.attention === 1 ? 'it' : 'them'}</button
+        >
       </Banner>
     {/if}
 
@@ -217,13 +222,24 @@
                   autofocus
                   onkeydown={(e) => e.key === 'Escape' && (editing = null)}
                 />
-                <Button type="submit" size="sm" variant="primary" icon={Check} loading={saving} ariaLabel="Save number" />
+                <Button
+                  type="submit"
+                  size="sm"
+                  variant="primary"
+                  icon={Check}
+                  loading={saving}
+                  ariaLabel="Save number"
+                />
                 <Button size="sm" variant="quiet" icon={X} ariaLabel="Cancel" onclick={() => (editing = null)} />
               </form>
             {:else}
               <span class="phone tabular" class:raw={!p.display}>{p.display || p.raw || '—'}</span>
               {#if p.status === 'attention'}
-                <button class="edit-btn fix" onclick={() => startEdit(p)} aria-label="Edit the number for {p.name || `row ${p.row}`}">
+                <button
+                  class="edit-btn fix"
+                  onclick={() => startEdit(p)}
+                  aria-label="Edit the number for {p.name || `row ${p.row}`}"
+                >
                   <Pencil size={15} aria-hidden={true} />
                   <span>Fix</span>
                 </button>
@@ -246,7 +262,9 @@
               <Pill tone={sv.tone} icon={sv.icon} text={sv.text} />
             {/if}
             {#if p.note}<span class="note">{p.note}</span>{/if}
-            {#if p.alsoRows?.length}<span class="note">Also in row{p.alsoRows.length > 1 ? 's' : ''} {p.alsoRows.join(', ')}.</span>{/if}
+            {#if p.alsoRows?.length}<span class="note"
+                >Also in row{p.alsoRows.length > 1 ? 's' : ''} {p.alsoRows.join(', ')}.</span
+              >{/if}
           </span>
         </div>
       {:else}

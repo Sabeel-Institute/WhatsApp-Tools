@@ -10,6 +10,9 @@
 </div>
 
 <style>
+  :global(html[data-capture]:not([data-capture='toast'])) .host {
+    display: none;
+  }
   .host {
     position: fixed;
     bottom: 1.5rem;

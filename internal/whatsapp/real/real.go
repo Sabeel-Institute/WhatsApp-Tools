@@ -26,6 +26,7 @@ import (
 	"google.golang.org/protobuf/proto"
 	_ "modernc.org/sqlite" // registers the "sqlite" database/sql driver
 
+	phonefmt "github.com/Sabeel-Institute/WhatsApp-Tools/internal/phone"
 	"github.com/Sabeel-Institute/WhatsApp-Tools/internal/whatsapp"
 )
 
@@ -190,7 +191,8 @@ func (c *Client) account() *whatsapp.Account {
 	if name == "" {
 		name = cli.Store.BusinessName
 	}
-	return &whatsapp.Account{Name: name, Phone: "+" + cli.Store.ID.User}
+	phone := "+" + cli.Store.ID.User
+	return &whatsapp.Account{Name: name, Phone: phone, Display: phonefmt.Pretty(phone)}
 }
 
 func (c *Client) handleEvent(cli *whatsmeow.Client, evt any) {

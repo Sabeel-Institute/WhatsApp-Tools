@@ -318,6 +318,16 @@ func Plausible(s string) bool {
 	return false
 }
 
+// Pretty formats an international number for reading, e.g.
+// "+12125550100" becomes "+1 212-555-0100". Unreadable input is returned
+// unchanged.
+func Pretty(e164 string) string {
+	if r := Normalize(e164, "US"); r.Display != "" {
+		return r.Display
+	}
+	return e164
+}
+
 // Country is one entry in the country picker.
 type Country struct {
 	Code string `json:"code"` // "US"

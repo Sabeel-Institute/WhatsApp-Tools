@@ -110,7 +110,7 @@ test('creates a course group from an Eventbrite export', async ({ app }) => {
   await page.getByRole('button', { name: /^\d+ Everyone/ }).click();
   // Untick one person.
   await page.getByRole('checkbox', { name: 'Add Idris Mohamed' }).uncheck();
-  await shot(page, '13-review-fixed');
+  await shot(page, '13-review-fixed', { toast: true });
 
   await continueStep();
   await expect(page.getByRole('heading', { name: 'Group details' })).toBeVisible();
@@ -168,8 +168,8 @@ test('creates a course group from an Eventbrite export', async ({ app }) => {
   // Opt-in personal invites.
   await page.getByRole('button', { name: 'Send them an invite in WhatsApp' }).click();
   await expect(page.getByRole('dialog')).toBeVisible();
-  await shot(page, '21-invite-confirm');
-  await page.getByRole('button', { name: /^Send \d+ invites$/ }).click();
+  await shot(page, '21-invite-confirm', { window: true });
+  await page.getByRole('button', { name: /^Send \d+ invites?$/ }).click();
   await expect(page.getByText(/Sending invites one at a time/)).toBeVisible();
   await shot(page, '22-invites-sending');
   await expect(page.getByText('Everyone who needed an invite has been sent one.')).toBeVisible({ timeout: 90_000 });
@@ -266,10 +266,10 @@ test('works at narrow widths', async () => {
 test('handles disconnects, logouts and other trouble', async ({ app }) => {
   // Account menu and the disconnect confirmation.
   await page.getByRole('button', { name: /Sabeel Front Desk/ }).click();
-  await shot(page, '34-account-menu');
+  await shot(page, '34-account-menu', { window: true });
   await page.getByRole('menuitem', { name: /Disconnect WhatsApp/ }).click();
   await expect(page.getByRole('dialog', { name: 'Disconnect WhatsApp?' })).toBeVisible();
-  await shot(page, '35-disconnect-confirm');
+  await shot(page, '35-disconnect-confirm', { window: true });
   await page.getByRole('button', { name: 'Cancel' }).click();
 
   // Unlinked from the phone: back to Connect, with an explanation.
@@ -298,7 +298,7 @@ test('handles disconnects, logouts and other trouble', async ({ app }) => {
 test('quits cleanly from the Quit button', async ({ app }) => {
   await page.getByRole('button', { name: 'Quit' }).click();
   await expect(page.getByRole('dialog', { name: 'Quit the app?' })).toBeVisible();
-  await shot(page, '40-quit-confirm');
+  await shot(page, '40-quit-confirm', { window: true });
   await page.getByRole('dialog').getByRole('button', { name: 'Quit' }).click();
   await expect(page.getByRole('heading', { name: 'The app has closed' })).toBeVisible();
   await shot(page, '41-closed');

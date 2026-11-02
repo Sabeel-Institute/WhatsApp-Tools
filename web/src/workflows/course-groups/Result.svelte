@@ -168,8 +168,11 @@
       </div>
       <div class="tile warning">
         <span class="tn tabular">{num(c.invite ?? 0)}</span>
-        <span class="tl">Couldn't add (privacy settings)</span>
-        {#if invitesSent}<span class="ts">{num(invitesSent)} sent an invite</span>{/if}
+        <span class="tl">Couldn't add</span>
+        <span class="ts">
+          {#if invitesSent}{num(invitesSent)} sent an invite{:else if c.invite}Privacy settings · invite below{:else}Privacy
+            settings{/if}
+        </span>
       </div>
       <div class="tile neutral">
         <span class="tn tabular">{num(c.notOnWhatsApp ?? 0)}</span>
@@ -185,7 +188,14 @@
       <Banner tone="info" title="{people(leftover.length)} still to add">
         You can try adding them again now. The ones already added aren't touched.
         {#snippet actions()}
-          <Button variant="primary" size="sm" icon={UserPlus} loading={actionBusy} disabled={!!app.activeJob || !app.connected} onclick={addRemaining}>
+          <Button
+            variant="primary"
+            size="sm"
+            icon={UserPlus}
+            loading={actionBusy}
+            disabled={!!app.activeJob || !app.connected}
+            onclick={addRemaining}
+          >
             Add the remaining {people(leftover.length)}
           </Button>
         {/snippet}
@@ -198,7 +208,13 @@
           <span class="iicon"><Link2 size={20} aria-hidden={true} /></span>
           <div>
             <h2 id="invite-h">
-              {needInvite.length ? `Invite the ${people(needInvite.length)} who couldn't be added` : 'Group invite link'}
+              {#if needInvite.length === 1}
+                Invite the person who couldn't be added
+              {:else if needInvite.length}
+                Invite the {people(needInvite.length)} who couldn't be added
+              {:else}
+                Group invite link
+              {/if}
             </h2>
             <p class="muted">
               {#if needInvite.length}
@@ -212,8 +228,16 @@
         </div>
 
         <div class="link-row">
-          <input class="link" readonly value={d.inviteLink} aria-label="Group invite link" onfocus={(e) => (e.currentTarget as HTMLInputElement).select()} />
-          <Button variant="primary" icon={Copy} onclick={() => copyText(d.inviteLink!, 'Invite link copied')}>Copy invite link</Button>
+          <input
+            class="link"
+            readonly
+            value={d.inviteLink}
+            aria-label="Group invite link"
+            onfocus={(e) => (e.currentTarget as HTMLInputElement).select()}
+          />
+          <Button variant="primary" icon={Copy} onclick={() => copyText(d.inviteLink!, 'Invite link copied')}
+            >Copy invite link</Button
+          >
         </div>
 
         {#if needInvite.length}
@@ -229,31 +253,55 @@
             {#if invitesActive && inviteJob}
               <div class="send-progress" role="status">
                 <p class="send-title">
-                  {#if inviteJob.state === 'waiting'}{inviteJob.message}{:else}Sending invites one at a time… {num(inviteJob.done)} of {num(inviteJob.total)}{/if}
+                  {#if inviteJob.state === 'waiting'}{inviteJob.message}{:else}Sending invites one at a time… {num(
+                      inviteJob.done,
+                    )} of {num(inviteJob.total)}{/if}
                 </p>
                 <ProgressBar value={inviteJob.total ? inviteJob.done / inviteJob.total : 0} label="Sending invites" />
                 <div class="send-controls">
                   {#if inviteJob.state === 'paused'}
-                    <Button size="sm" onclick={() => api.post(`/api/jobs/${inviteJob.id}/resume`).then((j) => app.setJob(j as Job))}>Continue</Button>
+                    <Button
+                      size="sm"
+                      onclick={() => api.post(`/api/jobs/${inviteJob.id}/resume`).then((j) => app.setJob(j as Job))}
+                      >Continue</Button
+                    >
                   {:else}
-                    <Button size="sm" onclick={() => api.post(`/api/jobs/${inviteJob.id}/pause`).then((j) => app.setJob(j as Job))}>Pause</Button>
+                    <Button
+                      size="sm"
+                      onclick={() => api.post(`/api/jobs/${inviteJob.id}/pause`).then((j) => app.setJob(j as Job))}
+                      >Pause</Button
+                    >
                   {/if}
-                  <Button size="sm" variant="danger" onclick={() => api.post(`/api/jobs/${inviteJob.id}/stop`).then((j) => app.setJob(j as Job))}>Stop sending</Button>
+                  <Button
+                    size="sm"
+                    variant="danger"
+                    onclick={() => api.post(`/api/jobs/${inviteJob.id}/stop`).then((j) => app.setJob(j as Job))}
+                    >Stop sending</Button
+                  >
                 </div>
               </div>
             {:else if inviteTargets.length}
               <div class="send-text">
-                <p class="send-title">Or let the app send each of them an invite in WhatsApp</p>
+                <p class="send-title">
+                  Or let the app send {inviteTargets.length === 1 ? 'them' : 'each of them'} an invite in WhatsApp
+                </p>
                 <p class="muted small">
-                  This sends a personal WhatsApp message from {app.status.account?.name || 'the connected account'} to each of
-                  the {people(inviteTargets.length)}, one at a time. Only use it if they're expecting to hear from you.
+                  {#if inviteTargets.length === 1}
+                    This sends one personal WhatsApp message from {app.status.account?.name || 'the connected account'}.
+                  {:else}
+                    This sends a personal WhatsApp message from {app.status.account?.name || 'the connected account'} to each
+                    of the {people(inviteTargets.length)}, one at a time.
+                  {/if}
+                  Only use it if they're expecting to hear from you.
                 </p>
               </div>
               <Button icon={Send} disabled={!!app.activeJob || !app.connected} onclick={() => (confirmInvites = true)}>
                 Send them an invite in WhatsApp
               </Button>
             {:else}
-              <p class="sent-all"><Send size={16} aria-hidden={true} /> Everyone who needed an invite has been sent one.</p>
+              <p class="sent-all">
+                <Send size={16} aria-hidden={true} /> Everyone who needed an invite has been sent one.
+              </p>
             {/if}
           </div>
         {/if}
@@ -267,7 +315,12 @@
         <h2 id="people-h">Everyone on the list</h2>
         <div class="tabs" role="group" aria-label="Show">
           {#each tabs as t (t.key)}
-            <button class="tab" class:active={filter === t.key} aria-pressed={filter === t.key} onclick={() => (filter = t.key)}>
+            <button
+              class="tab"
+              class:active={filter === t.key}
+              aria-pressed={filter === t.key}
+              onclick={() => (filter = t.key)}
+            >
               {t.label} <span class="tabular">{num(t.n)}</span>
             </button>
           {/each}
@@ -302,19 +355,32 @@
   </div>
 {/if}
 
-<Modal open={confirmInvites} title="Send {people(inviteTargets.length)} an invite?" onclose={() => (confirmInvites = false)} width={540}>
+<Modal
+  open={confirmInvites}
+  title={inviteTargets.length === 1
+    ? 'Send an invite to 1 person?'
+    : `Send invites to ${people(inviteTargets.length)}?`}
+  onclose={() => (confirmInvites = false)}
+  width={540}
+>
   <p>
-    Each of them will get a personal WhatsApp message from <strong>{app.status.account?.name || 'the connected account'}</strong>
-    ({app.status.account?.phone}) with your message and the group link.
+    {inviteTargets.length === 1 ? 'They' : 'Each of them'} will get a personal WhatsApp message from
+    <strong>{app.status.account?.name || 'the connected account'}</strong> ({app.status.account?.display}) with your
+    message and the group link.
   </p>
-  <p>
-    To protect the account, messages go out one at a time with a pause between them. This takes {duration(inviteSeconds)}.
-    You can stop at any time.
-  </p>
+  {#if inviteTargets.length > 1}
+    <p>
+      To protect the account, messages go out one at a time with a pause between them. This takes {duration(
+        inviteSeconds,
+      )}. You can stop at any time.
+    </p>
+  {/if}
   {#if actionError}<p class="err">{actionError}</p>{/if}
   {#snippet actions()}
     <Button onclick={() => (confirmInvites = false)}>Cancel</Button>
-    <Button variant="primary" icon={Send} loading={actionBusy} onclick={sendInvites}>Send {num(inviteTargets.length)} invites</Button>
+    <Button variant="primary" icon={Send} loading={actionBusy} onclick={sendInvites}>
+      {inviteTargets.length === 1 ? 'Send 1 invite' : `Send ${num(inviteTargets.length)} invites`}
+    </Button>
   {/snippet}
 </Modal>
 

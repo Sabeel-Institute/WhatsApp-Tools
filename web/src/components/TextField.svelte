@@ -35,9 +35,9 @@
 
   const length = $derived(value.length);
   const over = $derived(limit !== undefined && length > limit);
-  const describedBy = $derived([hint && `${id}-hint`, (error || over) && `${id}-err`, limit && `${id}-count`]
-    .filter(Boolean)
-    .join(' '));
+  const describedBy = $derived(
+    [hint && `${id}-hint`, (error || over) && `${id}-err`, limit && `${id}-count`].filter(Boolean).join(' '),
+  );
   let el: HTMLInputElement | HTMLTextAreaElement | undefined = $state();
   $effect(() => {
     if (autofocus) el?.focus();
@@ -46,7 +46,9 @@
 
 <div class="field" class:invalid={!!error || over}>
   <div class="label-row">
-    <label for={id}>{label}{#if optional}<span class="optional"> (optional)</span>{/if}</label>
+    <label for={id}
+      >{label}{#if optional}<span class="optional">(optional)</span>{/if}</label
+    >
     {#if limit !== undefined}
       <span class="count tabular" class:over id="{id}-count" aria-live="polite">
         {length} / {limit}<span class="sr-only"> characters</span>
@@ -63,8 +65,7 @@
       bind:value
       aria-invalid={!!error || over}
       aria-describedby={describedBy || undefined}
-      {onkeydown}
-    ></textarea>
+      {onkeydown}></textarea>
   {:else}
     <input
       bind:this={el}
@@ -106,6 +107,7 @@
     font-size: 0.9375rem;
   }
   .optional {
+    margin-left: 0.35rem;
     font-weight: 450;
     color: var(--text-secondary);
   }

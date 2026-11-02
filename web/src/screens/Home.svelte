@@ -94,11 +94,7 @@
       <div class="actions">
         {#each wf.actions as action (action.id)}
           {@const Icon = actionIcon(action.icon)}
-          <button
-            class="action"
-            class:primary={action.primary}
-            onclick={() => router.go(`/w/${wf.id}/${action.id}`)}
-          >
+          <button class="action" class:primary={action.primary} onclick={() => router.go(`/w/${wf.id}/${action.id}`)}>
             <span class="action-icon"><Icon size={26} aria-hidden={true} /></span>
             <span class="action-text">
               <span class="action-label">{action.label}</span>
@@ -123,7 +119,9 @@
       <div class="empty">
         <span class="empty-icon"><History size={26} aria-hidden={true} /></span>
         <p class="empty-title">Nothing here yet</p>
-        <p class="muted">When you create a group or add people, it will appear here so you can look at the results again.</p>
+        <p class="muted">
+          When you create a group or add people, it will appear here so you can look at the results again.
+        </p>
       </div>
     {:else}
       <ul class="run-list">
@@ -140,7 +138,9 @@
               <span class="run-main">
                 <span class="run-title">{run.title}</span>
                 <span class="run-sub small">
-                  {run.kind === 'add' ? 'Added people' : 'New group'}{run.subtitle ? ` · ${run.subtitle}` : ''} · {when(run.startedAt)}
+                  {run.kind === 'add' ? 'Added people' : 'New group'}{run.subtitle ? ` · ${run.subtitle}` : ''} · {when(
+                    run.startedAt,
+                  )}
                 </span>
               </span>
               <span class="run-result">

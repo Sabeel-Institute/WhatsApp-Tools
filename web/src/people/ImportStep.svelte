@@ -48,15 +48,22 @@
       <div class="file-text">
         <p class="file-name">{list.table.fileName}</p>
         <p class="muted small">
-          {plural(list.table.rows.length, 'row', 'rows')} of people · {plural(list.table.columns.length, 'column', 'columns')}
+          {plural(list.table.rows.length, 'row', 'rows')} of people · {plural(
+            list.table.columns.length,
+            'column',
+            'columns',
+          )}
         </p>
       </div>
-      <Button variant="secondary" size="sm" icon={RefreshCw} onclick={() => input?.click()}>Choose a different file</Button>
+      <Button variant="secondary" size="sm" icon={RefreshCw} onclick={() => input?.click()}
+        >Choose a different file</Button
+      >
     </div>
 
     {#if !list.table.hasHeader}
       <Banner tone="info">
-        This file doesn't have a row of column names at the top, so the columns are called Column A, Column B, and so on.
+        This file doesn't have a row of column names at the top, so the columns are called Column A, Column B, and so
+        on.
       </Banner>
     {/if}
 

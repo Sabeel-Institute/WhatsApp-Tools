@@ -5,8 +5,7 @@
     checked: boolean;
     id?: string;
   }
-  let { label, description, checked = $bindable(), id = `tg-${Math.random().toString(36).slice(2)}` }: Props =
-    $props();
+  let { label, description, checked = $bindable(), id = `tg-${Math.random().toString(36).slice(2)}` }: Props = $props();
 </script>
 
 <div class="toggle">

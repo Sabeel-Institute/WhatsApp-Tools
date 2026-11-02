@@ -3,19 +3,12 @@
 
 /** whatsapp.State */
 export type WAState =
-  | 'starting'
-  | 'unlinked'
-  | 'linking'
-  | 'connecting'
-  | 'connected'
-  | 'logged_out'
-  | 'outdated'
-  | 'banned'
-  | 'replaced';
+  'starting' | 'unlinked' | 'linking' | 'connecting' | 'connected' | 'logged_out' | 'outdated' | 'banned' | 'replaced';
 
 export interface Account {
   name: string;
   phone: string;
+  display: string;
 }
 
 /** whatsapp.Status */

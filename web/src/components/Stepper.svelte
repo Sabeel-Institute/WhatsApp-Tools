@@ -19,12 +19,7 @@
       {@const active = i === current}
       {@const canGo = !locked && i !== current && i <= reachable}
       <li class:done class:active>
-        <button
-          type="button"
-          disabled={!canGo}
-          aria-current={active ? 'step' : undefined}
-          onclick={() => onstep?.(i)}
-        >
+        <button type="button" disabled={!canGo} aria-current={active ? 'step' : undefined} onclick={() => onstep?.(i)}>
           <span class="dot">
             {#if done}<Check size={14} strokeWidth={3} aria-hidden={true} />{:else}{i + 1}{/if}
           </span>

@@ -138,7 +138,9 @@
         {/if}
         {#if blockedReason}<span class="why">{blockedReason}</span>{/if}
         {#if draft.step < 4}
-          <Button variant="primary" size="lg" iconRight={ArrowRight} disabled={!canContinue} onclick={next}>Continue</Button>
+          <Button variant="primary" size="lg" iconRight={ArrowRight} disabled={!canContinue} onclick={next}
+            >Continue</Button
+          >
         {:else}
           <Button
             variant="primary"
