@@ -176,10 +176,13 @@ func (c *Client) sleep(ctx context.Context, d time.Duration) error {
 	}
 }
 
+// pairingAlphabet is the one WhatsApp uses for pairing codes (no 0, I, O, U).
+var pairingAlphabet = base32.NewEncoding("123456789ABCDEFGHJKLMNPQRSTVWXYZ").WithPadding(base32.NoPadding)
+
 func randomCode(n int) string {
 	b := make([]byte, n)
 	_, _ = rand.Read(b)
-	return base32.StdEncoding.WithPadding(base32.NoPadding).EncodeToString(b)
+	return pairingAlphabet.EncodeToString(b)
 }
 
 // StartQRLogin implements whatsapp.Client. Codes rotate like WhatsApp's and

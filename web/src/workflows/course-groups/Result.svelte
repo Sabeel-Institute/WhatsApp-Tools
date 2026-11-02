@@ -170,7 +170,7 @@
         <span class="tn tabular">{num(c.invite ?? 0)}</span>
         <span class="tl">Couldn't add</span>
         <span class="ts">
-          {#if invitesSent}{num(invitesSent)} sent an invite{:else if c.invite}Privacy settings · invite below{:else}Privacy
+          {#if invitesSent}Invite sent to {num(invitesSent)}{:else if c.invite}Privacy settings · invite below{:else}Privacy
             settings{/if}
         </span>
       </div>

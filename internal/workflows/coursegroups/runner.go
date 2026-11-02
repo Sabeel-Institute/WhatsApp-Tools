@@ -212,7 +212,7 @@ func (s *runState) execute(ctl *jobs.Control) (err error) {
 			return err
 		}
 		if start+size < len(pending) {
-			ctl.Phase("Pausing a few seconds between batches to keep the account safe")
+			ctl.Phase("Waiting a few seconds between batches to keep the account safe")
 			if err := ctl.Sleep(whatsapp.Between(deps.Pacing.BatchPauseMin, deps.Pacing.BatchPauseMax)); err != nil {
 				return err
 			}

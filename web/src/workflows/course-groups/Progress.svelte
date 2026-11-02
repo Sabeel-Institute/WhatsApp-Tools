@@ -55,7 +55,11 @@
     </p>
     <h1 id="job-title">{job.title}</h1>
     <p class="phase" aria-live="polite">
-      {job.state === 'stopping' ? 'Finishing the current step, then stopping…' : job.phase}
+      {job.state === 'stopping'
+        ? 'Finishing the current step, then stopping…'
+        : job.state === 'paused'
+          ? 'Waiting for you to continue'
+          : job.phase}
     </p>
 
     <div class="numbers">
