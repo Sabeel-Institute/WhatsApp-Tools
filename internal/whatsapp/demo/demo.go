@@ -33,6 +33,8 @@ type Options struct {
 	LinkAfter time.Duration
 	// QRRefresh is how often a new QR code appears.
 	QRRefresh time.Duration
+	// OfflineFor is how long Simulate("offline") drops the connection.
+	OfflineFor time.Duration
 }
 
 // Client is the demo implementation of whatsapp.Client.
@@ -77,6 +79,9 @@ func New(dir string, opts Options) *Client {
 	}
 	if opts.QRRefresh == 0 {
 		opts.QRRefresh = 20 * time.Second
+	}
+	if opts.OfflineFor == 0 {
+		opts.OfflineFor = 20 * time.Second
 	}
 	c := &Client{
 		dir:        dir,
@@ -461,18 +466,19 @@ func (c *Client) SendInvite(ctx context.Context, to whatsapp.Participant, invite
 }
 
 // Simulate drives the demo into states that are hard to reach otherwise, so
-// they can be tried and screenshotted: "offline" (a 20-second network drop),
+// they can be tried and screenshotted: "offline" (a network drop lasting
+// Options.OfflineFor),
 // "logout", "outdated" and "ban".
 func (c *Client) Simulate(what string) error {
 	switch what {
 	case "offline":
 		c.mu.Lock()
-		c.offlineTill = time.Now().Add(20 * time.Second)
+		c.offlineTill = time.Now().Add(c.opts.OfflineFor)
 		acct := c.status.Account
 		c.mu.Unlock()
 		c.setStatus(whatsapp.StateConnecting, acct, "")
 		go func() {
-			time.Sleep(20 * time.Second)
+			time.Sleep(c.opts.OfflineFor)
 			c.setStatus(whatsapp.StateConnected, acct, "")
 		}()
 	case "logout":

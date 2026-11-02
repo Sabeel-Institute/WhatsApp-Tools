@@ -350,5 +350,11 @@ func cleanCell(s string) string {
 		}
 		return r
 	}, s)
-	return strings.TrimSpace(s)
+	s = strings.TrimSpace(s)
+	// A quoted field with spaces around the quotes (`, "Phone" ,`) reaches
+	// us with its quotes; unwrap it the way a spreadsheet program would.
+	if len(s) >= 2 && s[0] == '"' && s[len(s)-1] == '"' {
+		s = strings.TrimSpace(strings.ReplaceAll(s[1:len(s)-1], `""`, `"`))
+	}
+	return s
 }

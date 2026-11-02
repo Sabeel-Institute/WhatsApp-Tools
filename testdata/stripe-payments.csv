@@ -1,0 +1,11 @@
+id,Created (UTC),Amount,Currency,Status,Customer Name,Customer Email,Customer Phone,Description
+ch_3Q01,2026-08-20 14:03,60.00,usd,Paid,Ismail Patel,ismail.patel@example.com,+12125550131,Arabic Level 1
+ch_3Q02,2026-08-20 15:41,60.00,usd,Paid,Ruqayyah Begum,ruqayyah@example.com,+1 646-555-0132,Arabic Level 1
+ch_3Q03,2026-08-21 09:12,60.00,usd,Paid,Musa Abdi,musa.abdi@example.com,+44 7911 123456,Arabic Level 1
+ch_3Q04,2026-08-21 10:55,60.00,usd,Paid,Layla Haddad,layla.h@example.com,+971 50 123 4567,Arabic Level 1
+ch_3Q05,2026-08-22 18:30,60.00,usd,Paid,Salman Javed,salman.j@example.com,0092 300 1234567,Arabic Level 1
+ch_3Q06,2026-08-23 08:16,60.00,usd,Paid,Hana Yilmaz,hana.y@example.com,+90 532 123 45 67,Arabic Level 1
+ch_3Q07,2026-08-23 12:47,60.00,usd,Refunded,Adam Rizvi,adam.rizvi@example.com,+1 917 555 0137,Arabic Level 1
+ch_3Q08,2026-08-24 17:02,60.00,usd,Paid,Safiya Mansour,safiya.m@example.com,+1 (718) 555-0138,Arabic Level 1
+ch_3Q09,2026-08-25 13:13,60.00,usd,Paid,Kareem Nasser,kareem.n@example.com,+1 347-555-0139,Arabic Level 1
+ch_3Q10,2026-08-26 19:44,60.00,usd,Paid,Asma Rashid,asma.r@example.com,+1 415 555 0140,Arabic Level 1

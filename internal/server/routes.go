@@ -88,6 +88,13 @@ func (s *Server) handleApp(w http.ResponseWriter, r *http.Request) error {
 		"maxGroupSize":  whatsapp.MaxGroupSize,
 		"maxNameLength": whatsapp.MaxGroupNameLength,
 		"maxDescLength": whatsapp.MaxDescriptionLength,
+		"pacing": map[string]any{
+			"addBatchSize":          s.deps.Pacing.AddBatchSize,
+			"batchPauseMinSeconds":  s.deps.Pacing.BatchPauseMin.Seconds(),
+			"batchPauseMaxSeconds":  s.deps.Pacing.BatchPauseMax.Seconds(),
+			"invitePauseMinSeconds": s.deps.Pacing.InvitePauseMin.Seconds(),
+			"invitePauseMaxSeconds": s.deps.Pacing.InvitePauseMax.Seconds(),
+		},
 	})
 	return nil
 }

@@ -43,6 +43,7 @@ test:
 
 lint-scripts:
 	shellcheck packaging/linux/*.sh scripts/*.sh
+	scripts/check-filenames.sh
 
 check: web vet test lint-scripts
 	cd web && npm run check

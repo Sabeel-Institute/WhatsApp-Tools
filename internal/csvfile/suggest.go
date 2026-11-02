@@ -4,6 +4,8 @@ import (
 	"regexp"
 	"strings"
 	"unicode"
+
+	"github.com/Sabeel-Institute/WhatsApp-Tools/internal/phone"
 )
 
 // Suggestion is the column mapping we propose; the user confirms or
@@ -25,11 +27,10 @@ var (
 		regexp.MustCompile(`(?i)^(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\.? \d{1,2},? \d{2,4}`),
 		regexp.MustCompile(`^\d{1,2}:\d{2}(:\d{2})?( ?[ap]m)?$`),
 	}
-	amountRe   = regexp.MustCompile(`^[-+]?[$€£¥₹]?\s?-?\d{1,3}([,.]?\d{3})*([.,]\d{1,2})?\s?(usd|eur|gbp|cad)?$`)
-	moneyRe    = regexp.MustCompile(`[$€£¥₹]|(?i)\b(usd|eur|gbp|cad)\b`)
-	sciRe      = regexp.MustCompile(`^\+?\d[.,]\d+[eE]\+?\d{1,2}$`)
-	phoneChars = regexp.MustCompile(`^[+(]?[\d\s().\-/]+$`)
-	nameRe     = regexp.MustCompile(`^[\p{L}][\p{L}\p{M}'’.\- ]*$`)
+	amountRe = regexp.MustCompile(`^[-+]?[$€£¥₹]?\s?-?\d{1,3}([,.]?\d{3})*([.,]\d{1,2})?\s?(usd|eur|gbp|cad)?$`)
+	moneyRe  = regexp.MustCompile(`[$€£¥₹]|(?i)\b(usd|eur|gbp|cad)\b`)
+	sciRe    = regexp.MustCompile(`^\+?\d[.,]\d+[eE]\+?\d{1,2}$`)
+	nameRe   = regexp.MustCompile(`^[\p{L}][\p{L}\p{M}'’.,\- ]*$`)
 )
 
 func isEmail(v string) bool { return emailRe.MatchString(v) }
@@ -64,51 +65,41 @@ func digitCount(s string) int {
 
 // looksLikePhone is deliberately loose: it only ranks columns.
 func looksLikePhone(v string) bool {
-	v = strings.TrimSpace(strings.TrimPrefix(v, "'"))
+	v = strings.TrimSpace(v)
 	if v == "" || isEmail(v) || isDate(v) {
 		return false
 	}
-	if sciRe.MatchString(v) {
-		return true // a number Excel turned into scientific notation
-	}
-	low := strings.ToLower(v)
-	for _, p := range []string{"tel:", "cell:", "mobile:", "phone:"} {
-		low = strings.TrimPrefix(low, p)
-	}
-	if i := strings.IndexAny(low, "x#"); i > 0 {
-		low = low[:i] // extension
-	}
-	low = strings.TrimSpace(low)
-	if !phoneChars.MatchString(low) {
-		return false
-	}
-	n := digitCount(low)
-	return n >= 7 && n <= 15
+	return sciRe.MatchString(v) || phone.Plausible(v)
 }
 
 func looksLikeName(v string) bool {
 	return nameRe.MatchString(v) && len(strings.Fields(v)) >= 1 && len(v) <= 60
 }
 
-// headerWords lowercases a header and splits it into words, also splitting
-// joined forms such as "FirstName" and "phone_number".
+// headerWords lowercases a header and splits it into words. Run-together
+// forms are split too ("FirstName", "phone_number"), while the whole word
+// is kept as well, so "WhatsApp" yields "whatsapp", "whats" and "app".
 func headerWords(h string) []string {
-	var b strings.Builder
-	prevLower := false
-	for _, r := range h {
-		switch {
-		case unicode.IsUpper(r) && prevLower:
-			b.WriteRune(' ')
+	raw := strings.FieldsFunc(h, func(r rune) bool { return !unicode.IsLetter(r) && !unicode.IsDigit(r) })
+	var words []string
+	for _, w := range raw {
+		words = append(words, strings.ToLower(w))
+		var b strings.Builder
+		var parts []string
+		prevLower := false
+		for _, r := range w {
+			if unicode.IsUpper(r) && prevLower && b.Len() > 0 {
+				parts = append(parts, b.String())
+				b.Reset()
+			}
 			b.WriteRune(unicode.ToLower(r))
-		case unicode.IsLetter(r) || unicode.IsDigit(r):
-			b.WriteRune(unicode.ToLower(r))
-		default:
-			b.WriteRune(' ')
+			prevLower = unicode.IsLower(r)
 		}
-		prevLower = unicode.IsLower(r)
+		parts = append(parts, b.String())
+		if len(parts) > 1 {
+			words = append(words, parts...)
+		}
 	}
-	words := strings.Fields(b.String())
-	// Split common run-together headers.
 	var out []string
 	for _, w := range words {
 		switch w {
@@ -118,7 +109,7 @@ func headerWords(h string) []string {
 			out = append(out, "last", "name")
 		case "fullname":
 			out = append(out, "full", "name")
-		case "phonenumber", "mobilenumber", "cellphone", "cellnumber", "telephone", "whatsappnumber":
+		case "phonenumber", "mobilenumber", "cellphone", "cellnumber", "telephone", "whatsappnumber", "phoneno":
 			out = append(out, "phone")
 		default:
 			out = append(out, w)
@@ -281,7 +272,7 @@ func Suggest(t *Table) Suggestion {
 		return 2
 	}
 	excluded := func(i int) bool {
-		return i == sg.Phone || st[i].email >= 0.5 || st[i].phone >= 0.5 ||
+		return i == sg.Phone || st[i].email >= 0.5 || st[i].phone >= 0.5 || st[i].name < 0.5 ||
 			hasAny(words[i], "email", "mail", "user", "username", "company", "course", "event", "ticket", "middle",
 				"nickname", "file", "emergency", "organization", "school")
 	}

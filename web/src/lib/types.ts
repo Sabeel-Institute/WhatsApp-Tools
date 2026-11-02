@@ -61,6 +61,13 @@ export interface AppInfo {
   maxGroupSize: number;
   maxNameLength: number;
   maxDescLength: number;
+  pacing: {
+    addBatchSize: number;
+    batchPauseMinSeconds: number;
+    batchPauseMaxSeconds: number;
+    invitePauseMinSeconds: number;
+    invitePauseMaxSeconds: number;
+  };
 }
 
 /** jobs.Snapshot */

@@ -303,6 +303,21 @@ func atoi(s string) int {
 	return n
 }
 
+// Plausible reports whether s is written like a phone number at all,
+// whatever its country or validity. It ranks spreadsheet columns, so it
+// accepts numbers that need fixing and rejects short numbers such as
+// amounts, order numbers and postcodes.
+func Plausible(s string) bool {
+	r := Normalize(s, "US")
+	switch r.Problem {
+	case ProblemNone, ProblemInvalid, ProblemExcelDamaged, ProblemMultiple, ProblemCountryCode, ProblemTooLong:
+		return countDigits(s) <= 32
+	case ProblemTooShort:
+		return countDigits(s) >= 7
+	}
+	return false
+}
+
 // Country is one entry in the country picker.
 type Country struct {
 	Code string `json:"code"` // "US"
